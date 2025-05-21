@@ -5,7 +5,8 @@ import { Request } from "express";
 
 describe('UserController', () => {
     const mockUserService: Partial<UserService> = {
-        createUser: jest.fn()
+        createUser: jest.fn(),
+        getAllUsers: jest.fn()
     }
     const userController = new UserController(mockUserService as UserService);
 
@@ -17,8 +18,36 @@ describe('UserController', () => {
             }
         } as Request;
         const mockResponse = makeMockResponse();
-        userController.createUser(mockRequest,mockResponse)
+        userController.createUser(mockRequest, mockResponse)
         expect(mockResponse.state.status).toBe(201)
         expect(mockResponse.state.json).toMatchObject({ message: 'Usuário criado' })
+    }),
+        it('Deve retornar erro caso o usuário não informe o nome', () => {
+            const mockRequest = {
+                body: {
+                    name: '',
+                    email: 'be@teste.com'
+                }
+            } as Request;
+            const mockResponse = makeMockResponse();
+            userController.createUser(mockRequest, mockResponse)
+            expect(mockResponse.state.status).toBe(400)
+            expect(mockResponse.state.json).toMatchObject({ message: 'Bad request! Name obrigatório' })
+        }),
+        it('Deve retornar todos os usuários', () => {
+            const mockRequest = {} as Request;
+            const mockResponse = makeMockResponse<{name: string, email: string}[]>();
+
+            (mockUserService.getAllUsers as jest.Mock).mockReturnValue([
+                { name: 'be', email: 'be@teste.com'}
+            ])
+
+            userController.getAllUsers(mockRequest, mockResponse)
+
+            expect(mockResponse.state.status).toBe(200)
+            expect(mockResponse.state.json).toMatchObject([
+                { name: 'be', email: 'be@teste.com'}
+            ])
+        })
     })
-})
+
