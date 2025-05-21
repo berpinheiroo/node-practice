@@ -6,7 +6,8 @@ import { Request } from "express";
 describe('UserController', () => {
     const mockUserService: Partial<UserService> = {
         createUser: jest.fn(),
-        getAllUsers: jest.fn()
+        getAllUsers: jest.fn(),
+        deleteUser: jest.fn()
     }
     const userController = new UserController(mockUserService as UserService);
 
@@ -34,6 +35,18 @@ describe('UserController', () => {
             expect(mockResponse.state.status).toBe(400)
             expect(mockResponse.state.json).toMatchObject({ message: 'Bad request! Name obrigatório' })
         }),
+        it('Deve retornar erro caso o usuário não informe o email', () => {
+            const mockRequest = {
+                body: {
+                    name: 'be',
+                    email: ''
+                }
+            } as Request;
+            const mockResponse = makeMockResponse();
+            userController.createUser(mockRequest, mockResponse)
+            expect(mockResponse.state.status).toBe(400)
+            expect(mockResponse.state.json).toMatchObject({ message: 'Bad request! Email obrigatório' })
+        }),
         it('Deve retornar todos os usuários', () => {
             const mockRequest = {} as Request;
             const mockResponse = makeMockResponse<{name: string, email: string}[]>();
@@ -48,6 +61,17 @@ describe('UserController', () => {
             expect(mockResponse.state.json).toMatchObject([
                 { name: 'be', email: 'be@teste.com'}
             ])
+        })
+        it('Deve deletar um usuário', () => {
+            const mockRequest = {
+                body: {
+                    name: 'be',
+                }
+            } as Request;
+            const mockResponse = makeMockResponse();
+            userController.deleteUser(mockRequest, mockResponse)
+            expect(mockResponse.state.status).toBe(200)
+            expect(mockResponse.state.json).toMatchObject({ message: 'Usuário deletado' })
         })
     })
 
