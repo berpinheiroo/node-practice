@@ -14,13 +14,8 @@ export class UserController {
         const userService = UserService
         const user = request.body
 
-        if (!user.name) {
-            response.status(400).json({ message: 'Bad request! Name obrigatório' })
-            return
-        }
-        
-        if (!user.email) {
-            response.status(400).json({ message: 'Bad request! Email obrigatório' })
+        if (!user.name || !user.email) {
+            response.status(400).json({ message: 'Bad request! Name e email obrigatórios' })
             return
         }
 
