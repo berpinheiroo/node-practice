@@ -6,7 +6,7 @@ export class UserRepository {
     private manager: EntityManager;
 
     constructor(
-        manager: EntityManager = AppDataSource.manager
+        manager: EntityManager
     ) {
         this.manager = manager;
     }
