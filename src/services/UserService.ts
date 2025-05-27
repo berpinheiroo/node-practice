@@ -16,8 +16,8 @@ export class UserService {
         const user = new User(name, email, password)
         return this.userRepository.createUser(user)
     }
-    getUser = () => {
-       
+    getUser = async (userId: string): Promise<User | null> => {
+       return this.userRepository.getUser(userId)
     }
 
     getAuthenticatedUser = async (email: string, password:string): Promise<User | null> => {
