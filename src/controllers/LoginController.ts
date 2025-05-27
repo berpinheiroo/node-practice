@@ -1,30 +1,23 @@
 import { Request, Response } from "express";
-import { sign } from 'jsonwebtoken'
-
-const user = {
-  id_user: "12345",
-  name: "Bernardo Pinheiro",
-  email: "be@diobank.com",
-  password: "password"
-};
+import { UserService } from "../services/UserService";
 
 export class LoginController {
+  userService: UserService;
+
+  constructor(userService = new UserService()) {
+    this.userService = userService;
+  }
+
   login = async (request: Request, response: Response) => {
-    
-    const tokenData = {
-        name: user.name,
-        email: user.email
-    }
+    const { email, password } = request.body;
 
-    const tokenKey = '123456789'
+    try {
+      const token = await this.userService.getToken(email, password);
 
-    const tokenOptions = {
-        subject: user.id_user
+      response.status(200).json({ token });
+      return;
+    } catch (error) {
+      return response.status(500).json({ message: "Email/password invalid!" });
     }
-    
-    const token = sign(tokenData, tokenKey, tokenOptions)
-    
-    response.status(200).json({token});
-    return;
   };
 }
