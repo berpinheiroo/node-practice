@@ -2,9 +2,11 @@ import { UserService } from "../services/UserService";
 import { UserController } from "./UserController";
 import { makeMockResponse } from "../__mocks__/mockResponse.mock";
 import { Request } from "express";
+import { makeMockRequest } from "../__mocks__/mockRequest.mock";
 
 const mockUserService = {
-  createUser: jest.fn()
+  createUser: jest.fn(),
+  getUser: jest.fn()
 };
 
 jest.mock("../services/UserService", () => {
@@ -15,6 +17,7 @@ jest.mock("../services/UserService", () => {
 
 describe("UserController", () => {
   const userController = new UserController();
+  const mockResponse = makeMockResponse();
 
   it("Deve adicionar um novo usuário", async () => {
     const mockRequest = {
@@ -24,7 +27,6 @@ describe("UserController", () => {
         password: "123456"
       }
     } as Request;
-    const mockResponse = makeMockResponse();
     await userController.createUser(mockRequest, mockResponse);
     expect(mockResponse.state.status).toBe(201);
     expect(mockResponse.state.json).toMatchObject({
@@ -75,4 +77,16 @@ describe("UserController", () => {
   //     expect(mockResponse.state.status).toBe(200);
   //     expect(mockResponse.state.json).toMatchObject({ message: 'Usuário deletado' });
   // });
+
+  it('Deve retornar o usuário com o userId informado', () => {
+    const mockRequest = makeMockRequest({
+      params: {
+        userId: "123456"
+      }
+    })
+
+    userController.getUser(mockRequest, mockResponse)
+    expect(mockUserService.getUser). toHaveBeenCalledWith('123456')
+    expect(mockResponse.state.status).toBe(200)
+  })
 });

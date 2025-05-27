@@ -17,7 +17,8 @@ export class LoginController {
       response.status(200).json({ token });
       return;
     } catch (error) {
-      return response.status(500).json({ message: "Email/password invalid!" });
+      response.status(500).json({ message: "Email/password invalid!" });
+      return;
     }
   };
 }
