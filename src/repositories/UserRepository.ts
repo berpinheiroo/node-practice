@@ -18,7 +18,7 @@ export class UserRepository {
     getUser = async (userId: string): Promise<User | null> => {
         return this.manager.findOne(User, {
             where: {
-                user_id: userId
+                id_user: userId
             }
         })
     }
