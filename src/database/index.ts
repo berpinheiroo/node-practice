@@ -1,4 +1,5 @@
 import { DataSource } from "typeorm";
+import { User } from "../entities/User";
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
@@ -6,6 +7,7 @@ export const AppDataSource = new DataSource({
     migrations: [
         "./src/database/migrations/*.ts",
     ],
+    entities: [User],
 });
 
 AppDataSource.initialize()
